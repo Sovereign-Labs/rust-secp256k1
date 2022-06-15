@@ -39,7 +39,17 @@ fn main() {
                // TODO these three should be changed to use libgmp, at least until secp PR 290 is merged
                .define("USE_NUM_NONE", Some("1"))
                .define("USE_FIELD_INV_BUILTIN", Some("1"))
-               .define("USE_SCALAR_INV_BUILTIN", Some("1"));
+               .define("USE_SCALAR_INV_BUILTIN", Some("1"))
+               .compiler("/usr/local/opt/llvm/bin/clang")
+               .flag("--sysroot=/opt/riscv/riscv32-unknown-elf") // https://github.com/riscv-collab/riscv-gnu-toolchain has been built and stored in /opt/riscv
+               .flag("--gcc-toolchain=/opt/riscv/")
+               .flag("-Os")
+               .flag("-fdata-sections")
+               .flag("-ffunction-sections")
+               .flag("-Wl")
+               .flag("-dead_strip")
+               .flag("-flto")
+               .target("riscv32-unknown-none-elf");
 
     if cfg!(feature = "lowmemory") {
         base_config.define("ECMULT_WINDOW_SIZE", Some("4")); // A low-enough value to consume negligible memory
@@ -65,4 +75,3 @@ fn main() {
                .file("depend/secp256k1/src/secp256k1.c")
                .compile("libsecp256k1.a");
 }
-
