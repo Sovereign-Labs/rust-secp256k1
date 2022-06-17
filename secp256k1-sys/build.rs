@@ -42,13 +42,18 @@ fn main() {
                .define("USE_SCALAR_INV_BUILTIN", Some("1"))
                .compiler("/usr/local/opt/llvm/bin/clang")
                .flag("--sysroot=/opt/riscv/riscv32-unknown-elf") // https://github.com/riscv-collab/riscv-gnu-toolchain has been built and stored in /opt/riscv
-               .flag("--gcc-toolchain=/opt/riscv/")
+               .flag("--gcc-toolchain=/opt/riscv") // https://github.com/riscv-collab/riscv-gnu-toolchain has been built and stored in /opt/riscv
+               .no_default_flags(true)
+               .flag("-O3")
+               .flag("--target=riscv32-unknown-none-elf")
+               .flag("-mabi=ilp32")
+               .flag("-mcmodel=medany")
                .flag("-Os")
                .flag("-fdata-sections")
                .flag("-ffunction-sections")
-               .flag("-Wl")
                .flag("-dead_strip")
                .flag("-flto")
+               .flag("-march=rv32im")
                .target("riscv32-unknown-none-elf");
 
     if cfg!(feature = "lowmemory") {
