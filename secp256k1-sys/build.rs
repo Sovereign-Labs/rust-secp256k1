@@ -21,13 +21,13 @@
 #![deny(unused_mut)]
 #![warn(missing_docs)]
 
-extern crate cc;
+use risc0_zkvm::build::rcc;
 
 use std::env;
 
 fn main() {
     // Actual build
-    let mut base_config = cc::Build::new();
+    let mut base_config = rcc::Build::new();
     base_config.include("depend/secp256k1/")
                .include("depend/secp256k1/include")
                .include("depend/secp256k1/src")
@@ -39,22 +39,7 @@ fn main() {
                // TODO these three should be changed to use libgmp, at least until secp PR 290 is merged
                .define("USE_NUM_NONE", Some("1"))
                .define("USE_FIELD_INV_BUILTIN", Some("1"))
-               .define("USE_SCALAR_INV_BUILTIN", Some("1"))
-               .compiler("/usr/local/opt/llvm/bin/clang")
-               .flag("--sysroot=/opt/riscv/riscv32-unknown-elf") // https://github.com/riscv-collab/riscv-gnu-toolchain has been built and stored in /opt/riscv
-               .flag("--gcc-toolchain=/opt/riscv") // https://github.com/riscv-collab/riscv-gnu-toolchain has been built and stored in /opt/riscv
-               .no_default_flags(true)
-               .flag("-O3")
-               .flag("--target=riscv32-unknown-none-elf")
-               .flag("-mabi=ilp32")
-               .flag("-mcmodel=medany")
-               .flag("-Os")
-               .flag("-fdata-sections")
-               .flag("-ffunction-sections")
-               .flag("-dead_strip")
-               .flag("-flto")
-               .flag("-march=rv32im")
-               .target("riscv32-unknown-none-elf");
+               .define("USE_SCALAR_INV_BUILTIN", Some("1"));
 
     if cfg!(feature = "lowmemory") {
         base_config.define("ECMULT_WINDOW_SIZE", Some("4")); // A low-enough value to consume negligible memory
