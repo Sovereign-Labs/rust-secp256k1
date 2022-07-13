@@ -21,7 +21,7 @@ features = [ "recovery", "lowmemory" ]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [build-dependencies]
-risc0-zkvm = { git = "https://github.com/Sovereign-Labs/risc0.git", branch = "cc-memory", features = ["std", "risc_cc"] }
+risc0-zkvm = { git = "https://github.com/Sovereign-Labs/risc0.git", branch = "cc-memory", default-features = false, features = ["std", "risc_cc"] }
 
 [dev-dependencies]
 libc = "0.2"
